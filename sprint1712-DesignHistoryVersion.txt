@@ -1,0 +1,90 @@
+重构fpmw的API
+【from】GET            /api/rest/v1.0/design            @controllers.AssetController.getDesign(sid: String ?= "", id: String)
+【to  】GET            /api/rest/v1.0/design            @controllers.AssetController.getDesign(sid: String ?= "", id: String, _history: Int ?= 0)
+· RequestParam：_history 空或者<=0时，向cms发送无参getDesign请求
+· RequestParam：_history=正整数n时，向cms发送带参数getDesign请求 ?_history=n
+
+重构cms的API
+【from】GET          /v1.0/asset/:id                    @controllers.AssetController.getAssetById(id: String)
+【to  】GET          /v1.0/asset/:id                    @controllers.AssetController.getAssetById(id: String, _history: Int ?= 0)
+· RequestParam：_history 空或者<=0时，返回最新版本design.json; 
+· RequestParam：_history=正整数n时，返回倒数第n个版本design.json，如果_history数值大于最老版本数目，取最老版本
+
+修改前后amazon资源uri只变versionId后缀
+https://ezhome-uat-cms-assets.s3.cn-north-1.amazonaws.com.cn/Asset/f55af4c9-20ac-4db5-8f7a-cea64f91224e/bf4ef761-2594-4ae4-83e6-0a626738d2e6.json?versionId=Lu2d54ep1FmHASDpmXnlxRaESXc4zlLc
+
+//critical code
+    //1.Get versions with aws-s3-sdk 2.Reload lastAsset.data with specific historyVersion
+    def fetchAssetByIdAndHistory(assetId: String, history: Int, lastAsset: Asset): Option[Asset] = {
+      val data = lastAsset.data.get
+      val s3Client = new AmazonS3Client(new BasicAWSCredentials(awsAccessKey,awsAccessSecret))
+      if (awsRegion.nonEmpty) {
+        s3Client.setRegion(RegionUtils.getRegion(awsRegion.get))
+      }
+      try{
+        val listVersionRequest = new ListVersionsRequest()
+          .withBucketName(awsUploadBucket)
+          .withPrefix(data.substring(data.indexOf("aws.com.cn")+11))
+        //"Asset/f55af4c9-20ac-4db5-8f7a-cea64f91224e/bf4ef761-2594-4ae4-83e6-0a626738d2e6.json"
+        import scala.collection.JavaConversions._
+        var versionListing: VersionListing = new VersionListing
+        var dateVersionList = List((new java.util.Date(),"versionID"))
+        do{
+          versionListing = s3Client.listVersions(listVersionRequest)
+          for (objectSummary <- versionListing.getVersionSummaries) {
+            dateVersionList = dateVersionList :+ (objectSummary.getLastModified, objectSummary.getVersionId)
+          }
+          listVersionRequest.setKeyMarker(versionListing.getNextKeyMarker)
+          listVersionRequest.setVersionIdMarker(versionListing.getNextVersionIdMarker)
+        }while(versionListing.isTruncated)
+        val dvlSorted = dateVersionList.sorted.reverse
+        val historyVersionId = {
+          if(history >= dvlSorted.length-1) dvlSorted.last._2
+          else dvlSorted(history + 1)._2
+        }
+//        download design.json of specific version
+//        import com.amazonaws.services.s3.model.S3Object
+//        val getObjectRequest = new GetObjectRequest(awsUploadBucket,
+//                                                    data.substring(data.indexOf("aws.com.cn")+11),
+//                                                    historyVersionId)
+//        val s3object = s3Client.getObject(getObjectRequest)
+//        val objectContentStream = s3object.getObjectContent
+//        val designString = scala.io.Source.fromInputStream(objectContentStream,"utf-8").mkString
+//        get Prefix and AT LAST s3Client.getObject(new GetObjectRequest(awsUploadBucket, key, versionId))
+//        val url = s"$awsUploadBucket/asset/$assetId/XXX.json?versionId=$historyVersionId"
+        val historyAsset = new Asset(
+          id = lastAsset.id ,
+          name = lastAsset.name ,
+          description = lastAsset.description ,
+          assetType = lastAsset.assetType ,
+          userId = lastAsset.userId ,
+          refId = lastAsset.refId ,
+          tenant = lastAsset.tenant ,
+          data = Option(data + "?versionId=" + historyVersionId),
+          parentId = lastAsset.parentId ,
+          attributes = lastAsset.attributes ,
+          origin = lastAsset.origin ,
+          meta = lastAsset.meta ,
+          status = lastAsset.status ,
+          timeCreated = lastAsset.timeCreated ,
+          lastTimeModified = lastAsset.lastTimeModified ,
+          synced = lastAsset.synced ,
+          streamIndex = lastAsset.streamIndex )
+        Option(historyAsset)
+      } catch {
+        case ex:Throwable => None
+      }
+    }
+
+//required = false表示不一定需要这个request @ApiParam，有值不解释，如果空则立即赋default值_history = 0
+//Action.async{}表示code block包含Future.successful()等待微服务的值，并发
+//backend-cms\app\controllers\AssetController.scala
+
+  @ApiOperation(value = "Find asset by Id (and _history)", notes = "Find asset", response = classOf[AssetDTO], httpMethod = "GET", nickname = "getAssetById")
+  def getAssetById(
+                    @ApiParam(value = "ID of the asset to fetch") @PathParam("id") id: String,
+                    @ApiParam(value = "_history", required = false) @QueryParam(value = "_history") _history: Int = 0) = Action.async {
+    request =>
+      val dto = GenericHistoryRequest(id, _history)
+      service.getAssetByIdAndHistory(dto) map respond[AssetDTO]//隐式转换成response(header,body,connection)
+  }

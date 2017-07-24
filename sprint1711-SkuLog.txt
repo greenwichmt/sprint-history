@@ -1,0 +1,26 @@
+﻿【put请求:externalId无字段】"old_sku":"","new_sku":"null-new-externalId"
+【put请求:externalId=String.empty】"old_sku":"test1353","new_sku":""
+【put请求:externalId="test1353"】"old_sku":"1334","new_sku":"test1353"
+
+
+【patch请求:externalId无字段】"old_sku":"Ignore","new_sku":"None-externalId"
+【patch请求:externalId="test1635"】"old_sku":"Ignore","new_sku":"test1635"
+
+//using postman to mock request
+
+PUT
+http://localhost:9012/mw/product/v2.0/upload/ezhome?a=0&lang=en_US
+Content-Type:application/json
+Authorization:Bearer c5d24d1b-eda2-4748-a379-675f268fbb15
+
+//payload ↓
+{"name":"test","defaultName":"test","description":"test","defaultDescription":"test","status":2,"auditStatus":1,"path":"tjsytest","externalId":"smstest","brandId":"d999b6c9-7646-4f25-addd-87d80e60f323","retailer":null,"familyIds":[],"attributes":[{"id":"f2ebc921-291a-42c6-be8d-e6f3019672fb","name":"AssetType","valuesIds":["c7caefaf-fc4d-4e40-960c-01445f43e949"],"free":[]},{"id":"dbd9b78c-fbae-4931-ac30-ff218059b3c6","name":"ContentType","valuesIds":["efe0823a-ec00-43c3-ab5e-2f574d879050"],"free":[]},{"id":"attr-has-handle","name":"hasHandle","valuesIds":["attr-has-handle-false"],"free":[]},{"id":"attr-isLoopTile","name":"isLoopTile","valuesIds":["f1702bab-ff07-4de7-86e3-1226ccfe9274"],"free":[]},{"id":"d84e3ec7-d39a-471e-8f39-58f645e209ef","name":"isScalable","valuesIds":["f7a2e788-611f-459a-908d-dadd483699d9"],"free":[]},{"id":"attr-isVariation","name":"isVariation","valuesIds":["attr-isVariation-false"],"free":[]},{"id":"4266633f-c95b-459c-9cce-1447fdf31ed5","name":"meshReduce","valuesIds":["a4179365-132a-4e14-8860-1e56bcedb8b2"],"free":[]},{"id":"attr-modelType-entry","name":"modelType","valuesIds":["attr-modelType-2d"],"free":[]},{"id":"afecdd1d-fa70-4279-ad01-7315f5df7fcc","name":"palletIndex","valuesIds":["fae629be-54a5-4aca-b7b8-87ffaae986cd"],"free":[]},{"id":"attr-postProcessingStatus","name":"PostProcessingStatus","valuesIds":["value-postProcessingStatus-success"],"free":[]},{"id":"9221463d-18ca-4b63-b09b-a2000585a00b","name":"Styles","valuesIds":["c3cd1c9b-a5d0-4e83-ad17-3c729d84aa9d"],"free":[]},{"id":"ebb2b817-33f3-45ac-8ce0-5eb4029fb149","name":"tileSize","valuesIds":[],"free":["78","78"]},{"id":"d852d083-4918-4f1b-b12f-72ac42d7325d","name":"WallOpeningType","valuesIds":["78c6d804-5711-4fde-8c2d-ccb794e95e3c"],"free":[]},{"id":"9760302e-698a-4a18-8872-72f6ae9568bb","name":"zindex","valuesIds":["b8edcdbd-f62c-427b-9baf-3262b356a9df"],"free":[]}],"removeAttributes":["55d5456e-a5d9-4725-970d-1404f8a8f6ab","attr-rejectReason","attr-floor-hue"],"categoryIds":["d5033161-825a-48c3-b6ed-0f6d48feb48a"],"files":[{"name":"iso_w160_h160.jpg","uploadByUser":true,"metaData":"isoResizedW160H160","serverUrl":"https://juran-prod-assets.s3.cn-north-1.amazonaws.com.cn/i/e1d9900d-5b93-4e9c-ba06-538eafe1dbb0/resized/iso_w160_h160.jpg","storageUrl":"https://juran-prod-assets.s3.cn-north-1.amazonaws.com.cn/i/e1d9900d-5b93-4e9c-ba06-538eafe1dbb0/resized/iso_w160_h160.jpg"},{"name":"iso.jpg","uploadByUser":true,"metaData":"iso","serverUrl":"https://juran-prod-assets.s3.cn-north-1.amazonaws.com.cn/i/e1d9900d-5b93-4e9c-ba06-538eafe1dbb0/iso.jpg","storageUrl":"https://juran-prod-assets.s3.cn-north-1.amazonaws.com.cn/i/e1d9900d-5b93-4e9c-ba06-538eafe1dbb0/iso.jpg"},{"name":"wallfloor.jpg","uploadByUser":true,"metaData":"wallfloor","serverUrl":"https://juran-prod-assets.s3.cn-north-1.amazonaws.com.cn/i/e1d9900d-5b93-4e9c-ba06-538eafe1dbb0/wallfloor.jpg","storageUrl":"https://juran-prod-assets.s3.cn-north-1.amazonaws.com.cn/i/e1d9900d-5b93-4e9c-ba06-538eafe1dbb0/wallfloor.jpg"}],"forceTopViewGenerate":false,"contentTypeName":"material/flooring - hardwood","productTypeName":"FloorTiles","id":"e1d9900d-5b93-4e9c-ba06-538eafe1dbb0","operation":"{\"created\":[],\"modified\":[{\"id\":\"externalId\",\"name\":\"externalId\",\"value\":\"2261\"},{\"id\":\"categoryIds\",\"name\":\"categoryIds\",\"value\":\"[\\\"d5033161-825a-48c3-b6ed-0f6d48feb48a\\\",\\\"cadeb6d1-7348-46ed-86c5-977c187ca6d1\\\"]\"}],\"removed\":[]}"}
+
+
+PATCH
+http://localhost:9012/mw/products/upload/ezhome?a=0
+Content-Type:application/json
+Authorization:Bearer 056d93ea-050f-41be-b86a-d20324912185
+
+//payload ↓
+[{"id":"174cafb1-3f21-4092-a8d5-17561fb60622","status":0,"references":{"others":{"externalId":"test1441"}},"operation":"{\"modified\":[{\"id\":\"status\",\"name\":\"status\",\"value\":0}]}"}]
