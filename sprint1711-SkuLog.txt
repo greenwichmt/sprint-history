@@ -1,4 +1,18 @@
-﻿【put请求:externalId无字段】"old_sku":"","new_sku":"null-new-externalId"
+﻿//critical code
+//从slf4j单例logger,打印Logger.apiExternalIdChange()函数
+  val _imp = scalalogging.Logger(LoggerFactory.getLogger("application"))
+  def apiExternalIdChange(productId: String, userId: String, oldExternalId: String, newExternalId: String) = {
+    var logmap:Map[String, String] = Map("component"->s"${component}",
+      "event_type"->"sku_change",
+      "product_id"->productId,
+      "user_id"->userId,
+      "old_sku"->oldExternalId,
+      "new_sku"->newExternalId)
+    info(appendEntries(logmap), "event")
+  }
+
+
+【put请求:externalId无字段】"old_sku":"","new_sku":"null-new-externalId"
 【put请求:externalId=String.empty】"old_sku":"test1353","new_sku":""
 【put请求:externalId="test1353"】"old_sku":"1334","new_sku":"test1353"
 
