@@ -1,3 +1,4 @@
+//use js to export excel file by reading html table node
 function fnExcelReport()
 {
     var tab_text="<table border='2px'><tr bgcolor='#87AFC6'>";
