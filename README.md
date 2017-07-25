@@ -1,2 +1,2 @@
 # sprint-history
-Record my sprint history as a conslusion!
+Record my sprint history as a conclusion!
