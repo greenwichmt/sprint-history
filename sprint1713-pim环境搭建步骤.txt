@@ -1,0 +1,28 @@
+[Ignore if your git ssh works]
+1. install git client
+2. check to make sure u've set environment variable
+3. set user name and email
+   $git config --global user.name "shumaosong"
+   $git config --global user.email "shumaosong@juran.com.cn"
+4. generate ssh public/private key
+   $ ssh-keygen -t rsa -C ¡°shumaosong@juran.com.cn¡±
+5. cd ~/.ssh paste id_rsa.pub to gitlab->settings->SSH Keys->Add key
+6. Congratulations git clone is ready!
+
+--jre
+--git ssh
+--IntelliJ IDEA with built-in Scala
+--ivy2 dependency cache is synchronized
+--granted access to gitlab pim project.
+
+[backend-pim]Given list above is prepared!
+1. cd workspace/
+2. git clone git@host:Backend/backend-pim.git
+3. IDEA->import pim project
+4. modify conf\application.conf
+  catalog-backend.url="http://54.222.172.35:8080"
+  ums-backend.url = "http://54.223.20.210:8080"
+5. config IDEA->run->edit configurations->add new configuration
+   ->modify jvm debug port to avoid port collision->Apply
+6. wanna debug?
+   gitbash->activator -jvm-debug 9019 "run 9012"

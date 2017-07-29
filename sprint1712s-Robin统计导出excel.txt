@@ -22,14 +22,66 @@ function fnExcelReport()
 
     if (msie > 0 || !!navigator.userAgent.match(/Trident.*rv\:11\./))      // If Internet Explorer
     {
+		var txtArea1 = document.createElement('a');
         txtArea1.document.open("txt/html","replace");
         txtArea1.document.write(tab_text);
         txtArea1.document.close();
         txtArea1.focus(); 
-        sa=txtArea1.document.execCommand("SaveAs",true,"Say Thanks to Sumit.xls");
+        var sa=txtArea1.document.execCommand("SaveAs",true,"Say Thanks to Sumit.xls");
     }  
     else                 //other browser not tested on IE 11
         sa = window.open('data:application/vnd.ms-excel,' + encodeURIComponent(tab_text));  
 
     return (sa);
 }
+
+
+
+//use js to export excel file by reading html table node
+function fnExcelReport()
+{
+      //getting values of current time for generating the file name
+    var dt = new Date();
+    var day = dt.getDate();
+    var month = dt.getMonth() + 1;
+    var year = dt.getFullYear();
+    var hour = dt.getHours();
+    var mins = dt.getMinutes();
+    var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;
+      //creating a temporary HTML link element (they support setting file names)
+    var a = document.createElement('a');
+      //getting data from our div that contains the HTML table
+    var data_type = 'data:application/vnd.ms-excel';
+    tab = document.getElementsByTagName('table');
+    var table_div = tab[0];
+      //var table_html = table_div.outerHTML.replace(/ /g, '%20');
+    a.href = data_type + ', ' + encodeURIComponent(table_div.outerHTML);
+      //setting the file name
+    a.download = 'exported_table_' + postfix + '.xls';
+      //triggering the function
+    a.click();
+}
+
+
+//getting values of current time for generating the file name
+        var dt = new Date();
+        var day = dt.getDate();
+        var month = dt.getMonth() + 1;
+        var year = dt.getFullYear();
+        var hour = dt.getHours();
+        var mins = dt.getMinutes();
+        var postfix = day + "." + month + "." + year + "_" + hour + "." + mins;
+        //creating a temporary HTML link element (they support setting file names)
+        var a = document.createElement('a');
+        //getting data from our div that contains the HTML table
+        var data_type = 'data:application/vnd.ms-excel';
+	tab = document.getElementsByTagName('table');
+        var table_div = tab[0];
+        var table_html = table_div.outerHTML.replace(/ /g, '%20');
+        a.href = data_type + ', ' + table_html;
+        //setting the file name
+        a.download = 'exported_table_' + postfix + '.xls';
+        //triggering the function
+        a.click();
+        //just in case, prevent default behaviour
+        e.preventDefault();
