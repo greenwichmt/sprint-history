@@ -206,7 +206,7 @@
         function  getExplorer() {
             var explorer = window.navigator.userAgent ;
             //ie
-            if (explorer.indexOf("MSIE") >= 0) {
+            if (explorer.indexOf("MSIE")>= 0 || explorer.indexOf("Trident")>= 0 || explorer.indexOf(".NET CLR") >= 0) {
                 return 'ie';
             }
             //firefox

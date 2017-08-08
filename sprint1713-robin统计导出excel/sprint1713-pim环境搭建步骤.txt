@@ -1,0 +1,30 @@
+*install JDK and set PATH variable
+*install git client and config ssh
+*install IntelliJ IDEA with built-in Scala
+*install lightbend activator https://www.lightbend.com/activator/download
+*synchronize ivy2 dependent cache from \\share.homestyler.com
+*granted access to gitlab pim project
+
+backend-pim Given list above is prepared !
+1. cd workspace/
+2. git clone git@host:Backend/backend-pim.git
+3. IDEA -> import pim project
+4. modify conf\application.conf
+	catalog-backend.url = "http://54.223.230.205:30003"
+	ums-backend.url     = "http://54.223.230.205:30002"
+5. config IDEA
+	run -> edit configurations -> add new configuration -> modify jvm debug port -> Apply
+6. wanna debug ?
+	git bash->activator -jvm-debug 9019 "run 9012"
+
+Ignore if your git clone ssh works
+1. install git client
+2. check to make sure u've set environment variable
+3. set user name and email
+	$git config --global user.name "your.name"
+	$git config --global user.email "your.email.address"
+4. generate ssh public/private key
+	$ ssh-keygen -t rsa -C "your.email.address"
+5. cd ~/.ssh
+	paste id_rsa.pub to gitlab->settings->SSH Keys->Add key
+6. Congratulations git clone is ready !

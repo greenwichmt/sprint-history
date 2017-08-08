@@ -1,0 +1,101 @@
+【robin前端调用pim的api】
+https://uat-pim.shejijia.com/mw/products/search/faceted/ezhome?offset=0&limit=1
+&fieldsToStat=categoriesIdsSearchString
+&categoriesIds=2fcca190-7fda-403c-8b0a-add380281544
+&attributeIds=
+【pim调用CatalogService的api】
+http://54.223.230.205:30003/v1.0/products/search?t=ezhome&branch=&lang=en_US
+{
+    "products": [
+        {
+            "id": "00039c64-cd26-4c71-887f-17eeff1ccba9",
+            "defaultName": "V038_26",
+            "defaultDescription": "V038_26",
+            "adminRank": null,
+            "systemRank": null,
+            "files": [
+                {
+                    "metaData": "androidDat",
+                    "uploadByUser": false,
+                    "url": "https://juran-prod-assets.s3.cn-north-1.amazonaws.com.cn/a/00039c64-cd26-4c71-887f-17eeff1ccba9/model.dat"
+                },...
+            ],
+            "attributes": [
+                {
+                    "id": "attr-support-platform-candidate",
+                    "attributeType": "",
+                    "name": "platformCanditate",
+                    "values": [
+                        {
+                            "id": "attr-support-platform-candidate-mobile",
+                            "value": "手机文件存在"
+                        }
+                    ]
+                },...
+            ],
+            "references": {
+                "hsId": "00039c64-cd26-4c71-887f-17eeff1ccba9",
+                "others": {
+                    "path": "V038_26",
+                    "version": "2",
+                    "externalId": "0000610007284",
+                    "postProcessingStatus": "1"
+                }
+            },
+            "status": 1,
+            "auditStatus": 0,
+            "name": "V038_26",
+            "description": "V038_26",
+            "categories": [
+                {
+                    "id": "2e336e49-2a54-46cb-bcee-67d2e5361e61",
+                    "name": "餐边柜",
+                    "parentId": "57803e6e-7a05-4b29-a543-d785dda86a10",
+                    "logo": "",
+                    "thumbnail": "https://juran-prod-assets.s3.cn-north-1.amazonaws.com.cn/Categories/NewVersion/thumbnail/2e336e49-2a54-46cb-bcee-67d2e5361e61.jpg",
+                    "status": 1,
+                    "subCategories": []
+                },
+                {
+                    "id": "f51b9c7c-c25e-4f0b-ab7a-73ac5e53d144",
+                    "name": "富兰蒂斯",
+                    "parentId": "08c7723b-74ab-4a3a-b34f-139c022696f6",
+                    "logo": "",
+                    "status": 1,
+                    "subCategories": []
+                }
+            ],
+            "brands": [
+                {
+                    "id": "bb411bc6-b771-4dd9-be86-1e54b63c771e",
+                    "name": "富兰蒂斯",
+                    "link": null,
+                    "logo": "",
+                    "url": "http://juran-prod-assets.s3.cn-north-1.amazonaws.com.cn/vendorlogos/temp-7762d73a-c805-4de3-9dc9-7627f76524f2.jpg",
+                    "hsId": null,
+                    "externalId": null
+                }
+            ],
+            "familyName": null,
+            "isNew": false,
+            "variationAttributes": null,
+            "retailers": [
+                {
+                    "id": "eec6ce98-7066-456e-9d46-ffba9b17646d",
+                    "name": "juranzhijia_居然之家",
+                    "price": 21400
+                }
+            ],
+            "creationTime": "2014-11-24T07:04:30.501Z",
+            "modifiedTime": "2017-05-17T10:00:13.077Z",
+            "spec": null,
+            "tags": null,
+            "groups": [],
+            "families": null
+        },...
+    ],
+    "totalNumberOfResults": 36678,
+    "facetResults": {},
+    "maxPrice": 6600000,
+    "minPrice": 1
+}
