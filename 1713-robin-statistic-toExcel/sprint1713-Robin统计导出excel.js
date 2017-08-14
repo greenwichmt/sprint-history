@@ -164,7 +164,42 @@ $scope.tableToExcelGecko = (function() {
         window.location.href = uri + base64(format(template, ctx))
     }
 })()
-
+$scope.tableToExcelGecko = function (tableNode)
+{
+    var dt = new Date();
+    var day = $scope.adjustDateString(dt.getDate());
+    var month = $scope.adjustDateString(dt.getMonth() + 1);
+    var year = dt.getFullYear();
+    var hour = $scope.adjustDateString(dt.getHours());
+    var mins = $scope.adjustDateString(dt.getMinutes());
+    var secs = $scope.adjustDateString(dt.getSeconds())
+    var postfix = year + month + day + hour + mins + secs;
+    var a = document.createElement('a');
+    var data_type = 'data:application/vnd.ms-excel';
+    a.href = data_type + ', ' + encodeURIComponent(tableNode.outerHTML);
+    a.download = '各品类模型审核状态统计' + postfix + '.xls';
+    a.click();
+}
+//form post hidden area
+        $scope.postToExcel = function(){
+            var options = {
+              url:'//localhost:9012/mw/respondexcel',
+              data:[{"id":16086,"name":"舒"},{"id":10001,"name":"zhuwei"}],
+              method:'post'
+            };
+            var config = $.extend(true, { method: 'post' }, options);
+            var $iframe = $('<iframe id="down-file-iframe" />');
+            var $form = $('<form target="down-file-iframe" method="' + config.method + '" />');
+            $form.attr('action', config.url);
+//          for (var key in config.data) {
+//              $form.append('<input type="hidden" name="' + key + '" value="' + config.data[key] + '" />');
+//          }
+            $form.append('<input type="hidden" name="data" value=' + encodeURIComponent(JSON.stringify(config.data)) + ' />');
+            $iframe.append($form);
+            $(document.body).append($iframe);
+            $form[0].submit();
+            $iframe.remove();
+        }
 //$scope.queryCategoryAuditMap = {
 //      "passActive":"&auditStatus=0&status=1",
 //		"passInactive":"&auditStatus=0&status=2",
