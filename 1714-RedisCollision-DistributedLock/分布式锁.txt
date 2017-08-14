@@ -1,0 +1,49 @@
+1. 添加依赖
+  ~/build
+  libraryDependencies ++= Seq(
+  ...
+  "org.redisson" % "redisson" % "3.2.0")
+2. 引入包，配置redisson锁
+	import java.io.File
+	import java.util.concurrent.TimeUnit
+	
+	import org.redisson.Redisson
+	import org.redisson.api.{RLock, RedissonClient}
+	import org.redisson.config.Config
+	import play.api.Logger
+	
+	object AssetLocker {
+		var _redisson: Option[RedissonClient] = None
+		try {
+			val config = Config.fromYAML(new File("conf/redisson.yaml"))
+			_redisson = Some(Redisson.create(config))
+		}  catch {
+			case ex: Throwable =>
+			Logger.debug(ex.toString)
+			_redisson = None
+		}
+		
+		def lockAsset(assetId: String): Option[RLock]= {
+			if (_redisson.nonEmpty) {
+			Logger.debug(s"Getting lock for ${assetId}")
+			val lock = _redisson.get.getLock("AssetLock:" + assetId)
+			lock.lock(10, TimeUnit.SECONDS)
+			Logger.debug(s"Locked for ${assetId}")
+			Some(lock)
+			} else None
+		}
+	}
+3. 锁唯一标识
+    poll(SyncQueueName) match {
+      case None => Thread.sleep(500)
+      case Some(m) => {
+        val json = Json.parse(m.getBody())
+        val message = (json \ "Message").as[String]
+        Logger.info("Message:" + message.toString())
+        val dto = Json.parse(message).as[SimpleContent]
+        AssetLocker.lockAsset(dto.id)
+        Future {
+          RequestHandlerRepo.handler(dto.nType).map(h => h.handle(dto))
+        }
+      }
+    }
