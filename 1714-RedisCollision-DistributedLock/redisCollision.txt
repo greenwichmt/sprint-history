@@ -1,0 +1,3 @@
+IDEA正则替换未request.uri
+CacheKeyPattern\.\w+\([^)]+\)
+CacheKeyPattern.getPattern(controller, method, uri)
