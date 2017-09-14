@@ -1,0 +1,1 @@
+https://stackoverflow.com/questions/24961833/reset-total-pages-in-jquery-pagination-plugin/46148177#46148177
