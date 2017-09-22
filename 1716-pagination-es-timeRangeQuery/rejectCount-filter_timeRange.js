@@ -36,14 +36,7 @@ private def mergeAssetAttributes(asset: Asset, optionsToPatch: JsObject,
       def isAuditAction(lastAction: AssetAuditAction): Boolean = {
         lastAction.action == AssetAuditActionType.Approve || lastAction.action == AssetAuditActionType.Reject
       }
-      def getAuditorId(lastAction: AssetAuditAction): Option[String] = {
-        if(isAuditAction(lastAction)) {
-          Some(lastAction.userId)
-        } else {
-          None
-        }
-      }
-      // get last audit and submit time LONG from auditlog£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡
+      // get last audit and submit time LONG from auditlog
       def getLastTime(logs: List[AssetAuditAction]): (Long, Long)={
         var (lastAuditTime,lastSubmitTime) = (0L,0L)
         logs foreach {
@@ -60,6 +53,17 @@ private def mergeAssetAttributes(asset: Asset, optionsToPatch: JsObject,
         }
         (lastAuditTime,lastSubmitTime)
       }
+      // get last auditorId STRING from auditlog
+      def getLastAuditorId(logs: List[AssetAuditAction]): String = {
+        var auditorId = ""
+        logs foreach {
+          case log if isAuditAction(log) && !log.userId.isEmpty => {
+            auditorId = log.userId
+          }
+          case _ =>
+        }
+        auditorId
+      }
 
       val attributeHead = asset.attributes.head
       val attributeFreeObj = Json.parse(attributeHead.free.head).as[JsObject]
@@ -67,17 +71,11 @@ private def mergeAssetAttributes(asset: Asset, optionsToPatch: JsObject,
       val allOptionsToPatch = if(auditActionOption.nonEmpty) {
         val auditActions = auditActionOption.get
         val newStatus = AssetAuditStatus.getStatus(auditActions.last.action)
-        val newAuditorId = getAuditorId(auditActions.last)
 
         val auditOption: Option[AssetAudit] = (attributeFreeObj \ "audit").asOpt[AssetAudit]
         val timeStamp = System.currentTimeMillis() / 1000L
         val updatedAudit: AssetAudit = if (auditOption.nonEmpty) {
-          val auditorId = newAuditorId match {
-            case Some(id) => id
-            case None => auditOption.get.auditorId
-          }
           val logDuplicates = auditOption.get.logs ++ auditActions
-		  //log È¥µôÖØ¸´Ïî£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡
           var timeUTCList = new ListBuffer[String]()
           val logs = logDuplicates filter {
             case log if !timeUTCList.contains(log.time) => {
@@ -86,19 +84,12 @@ private def mergeAssetAttributes(asset: Asset, optionsToPatch: JsObject,
             }
             case _ => false
           }
+          val auditorId = getLastAuditorId(logs)
           val (lastAuditTime,lastSubmitTime) = getLastTime(logs)
           val rejectCount = logs.count(_.action == AssetAuditActionType.Reject)
-          if(isAuditAction(auditActions.last)){
-            auditOption.get.copy(status = newStatus, auditorId = auditorId, logs = logs, rejectCount = Some(rejectCount), auditTime = Some(lastAuditTime), submitTime = Some(lastSubmitTime))
-          }else{
-            auditOption.get.copy(status = newStatus, auditorId = auditorId, logs = logs, rejectCount = Some(rejectCount), auditTime = Some(lastAuditTime), submitTime = Some(lastSubmitTime))
-          }
-
+          auditOption.get.copy(status = newStatus, auditorId = auditorId, logs = logs, rejectCount = Some(rejectCount), auditTime = Some(lastAuditTime), submitTime = Some(lastSubmitTime))
         } else {
-          val auditorId = newAuditorId match {
-            case Some(id) => id
-            case None => ""
-          }
+          val auditorId = getLastAuditorId(auditActions)
           val (lastAuditTime,lastSubmitTime) = getLastTime(auditActions)
           val rejectCount = auditActions.count(_.action == AssetAuditActionType.Reject)
           AssetAudit(status = newStatus, auditorId = auditorId, logs = auditActions, rejectCount = Some(rejectCount), auditTime = Some(lastAuditTime), submitTime = Some(lastSubmitTime))
