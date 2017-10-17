@@ -12,7 +12,7 @@ from couchbase.bucket import Bucket
 #mys3 = boto3.resource('s3')
 #s3 = boto3.resource('s3', region_name = "cn-north-1")
 conn_src  = Bucket('couchbase://47.94.135.179:8091/catalogue') # uat couchbase
-#global_src  = Bucket('couchbase://47.89.179.118:8091/catalogue') # prod couchbase
+#global_src  = Bucket('couchbase://47.89.179.118:8091/catalogue')
 #local_src  = Bucket('couchbase://localhost:8091/catalogue')
 
 def getData(key):
@@ -37,7 +37,8 @@ def ifNvlThenCreateKey(productData, key, defaultValue):
     except Exception as e:
         productData[key]=defaultValue
         print "attribute " +key+ " null exception! CREATE!"
-    return productData
+    finally:
+        return productData
 
 def appendAttr(productData, typeId, jsonData):
     attrIdx = []
@@ -45,6 +46,7 @@ def appendAttr(productData, typeId, jsonData):
         if productData["attributes"][idx]["typeId"]==typeId:
             attrIdx.append(idx)
             print "!" + typeId + " exists,stack it for delete!"
+    attrIdx.sort(reverse=True)
     for idx in attrIdx:
         del productData["attributes"][idx]
     productData["attributes"].append(jsonData)
@@ -56,12 +58,12 @@ def appendAttr(productData, typeId, jsonData):
 def mergeNewData(productData, oldId):
     jsonCateRoot = json.loads("{\"typeId\":\"attr-category-root\",\"values\":[],\"free\":[\"front-category-root\"]}")
     jsonMappings = json.loads("{\"typeId\":\"attr-category-mappings\",\"values\":[],\"free\":[\""+oldId+"\"]}")
-    ifNvlThenCreateKey(productData, "attributes", [])
-    ifNvlThenCreateKey(productData, "children", [])
+    productData = ifNvlThenCreateKey(productData, "attributes", [])
+    productData = ifNvlThenCreateKey(productData, "children", [])
 
-    appendAttr(productData, "attr-category-root", jsonCateRoot)
+    productData = appendAttr(productData, "attr-category-root", jsonCateRoot)
     if len(productData["children"])==0:
-        appendAttr(productData, "attr-category-mappings", jsonMappings)
+        productData = appendAttr(productData, "attr-category-mappings", jsonMappings)
     return productData
 
 def updateDoc(newId, oldId, logSuffix):
@@ -72,14 +74,14 @@ def updateDoc(newId, oldId, logSuffix):
         newData = mergeNewData(productData, oldId)
         
         with open("logs\patchLog"+logSuffix+".txt", "a") as logFile:
-            print "processing..." + newId
             try:
                 updateData(newId, newData)
                 logFile.write("succeed--" + newId)
             except Exception as e:
                 print str(e)
-                logFile.write("failed--" + newId + "--" + e)
-            logFile.write("\n")
+                logFile.write("failed--" + newId + "--" + str(e))
+            finally:
+                logFile.write("\n")
 
 #recursion
 def doProcess(curNode, logSuffix):
