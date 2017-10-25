@@ -40,7 +40,7 @@ https://ezhome-uat-cms-assets.s3.cn-north-1.amazonaws.com.cn/Asset/f55af4c9-20ac
         val dvlSorted = dateVersionList.sorted.reverse
         val historyVersionId = {
           if(history >= dvlSorted.length-1) dvlSorted.last._2
-          else dvlSorted(history + 1)._2
+          else dvlSorted(history)._2
         }
 //        download design.json of specific version
 //        import com.amazonaws.services.s3.model.S3Object
@@ -52,24 +52,10 @@ https://ezhome-uat-cms-assets.s3.cn-north-1.amazonaws.com.cn/Asset/f55af4c9-20ac
 //        val designString = scala.io.Source.fromInputStream(objectContentStream,"utf-8").mkString
 //        get Prefix and AT LAST s3Client.getObject(new GetObjectRequest(awsUploadBucket, key, versionId))
 //        val url = s"$awsUploadBucket/asset/$assetId/XXX.json?versionId=$historyVersionId"
-        val historyAsset = new Asset(
-          id = lastAsset.id ,
-          name = lastAsset.name ,
-          description = lastAsset.description ,
-          assetType = lastAsset.assetType ,
-          userId = lastAsset.userId ,
-          refId = lastAsset.refId ,
-          tenant = lastAsset.tenant ,
-          data = Option(data + "?versionId=" + historyVersionId),
-          parentId = lastAsset.parentId ,
-          attributes = lastAsset.attributes ,
-          origin = lastAsset.origin ,
-          meta = lastAsset.meta ,
-          status = lastAsset.status ,
-          timeCreated = lastAsset.timeCreated ,
-          lastTimeModified = lastAsset.lastTimeModified ,
-          synced = lastAsset.synced ,
-          streamIndex = lastAsset.streamIndex )
+        val historyAsset = {
+          if(dvlSorted.length>1)  lastAsset.copy(data = Option(data + "?versionId=" + historyVersionId))
+          else lastAsset
+        }
         Option(historyAsset)
       } catch {
         case ex:Throwable => None
