@@ -1,0 +1,7 @@
+Detect HTTP or HTTPS then force HTTPS in JavaScript
+
+https://stackoverflow.com/questions/4723213/detect-http-or-https-then-force-https-in-javascript
+
+https://stackoverflow.com/questions/3048236/amazon-s3-https-ssl-is-it-possible
+
+https://stackoverflow.com/questions/23993675/amazon-s3-redirect-rule-get-data-is-missing
