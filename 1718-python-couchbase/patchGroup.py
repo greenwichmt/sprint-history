@@ -3,35 +3,33 @@ import time
 import json
 from couchbase.bucket import Bucket
 
-#conn_src  = Bucket('couchbase://47.94.135.179:8091/user') # uat
-conn_src  = Bucket('couchbase://54.222.137.30:8091/user') # prod
+conn_src  = Bucket('couchbase://47.94.135.179:8091/user') # uat
 
-# audit_group = 'group-role-auditor_ezhome'
+resultList = list()
 
-def getData(key, resultSet):
+def getData(key):
     data = None
     try:
         print "Reading: " + key
         data = conn_src.get(key)
     except Exception as e:
-        # print 'WARNING: Not found ' + key
         try:
             data = conn_src.get(key, replica=True)
-            print 'Found in replica ' + key
+            # print 'Found in replica ' + key
         except Exception as e:
             print 'WARNING: Not found ' + key + ">>" + str(e)
-            resultSet.add("getFailed=="+key)
+            resultList.append("getFailed=="+key)
             return None
     return data.value
 
-def setData(key, data, resultSet):
+def setData(key, data, change):
     try:
         print "Writing: " + key
         conn_src.set(key, data)
-        resultSet.add("setSucceed=="+key)
+        resultList.append(change + " Succeed=="+key)
     except Exception as e:
         print 'Writeing failed' + key
-        resultSet.add("setFailed=="+key)
+        resultList.append(change + " Failed=="+key)
 
 def ifNvlThenCreateKey(productData, key, defaultValue):
     try:
@@ -46,26 +44,34 @@ def ifNvlThenCreateKey(productData, key, defaultValue):
 def process(filePath):
     productIds = loadProductIds(filePath)
 
-    resultSet = set()
     for productId in productIds:
         userJson = json.loads(productId)
         userId = userJson["guid"].strip()
         company = userJson["company"].strip()
+        change = userJson["change"].strip()
         #print userJson["guid"] + "==" + userJson["company"]
-        productData = getData(userId, resultSet)
+        productData = getData(userId)
         #if productData and productData.has_key("groupids"):
         if productData:
             productData = ifNvlThenCreateKey(productData, "groupids", [])
             groups = productData["groupids"]
+            
+            realChange = 0
             try:
-                groups.index(company)
+                idx = groups.index(company)
+                if change=="delete":
+                    groups.pop(idx)
+                    realChange = 1
             except ValueError:
-                groups.append(company)
+                if change=="add":
+                    groups.append(company)
+                    realChange = 1
+            if realChange == 1:
                 productData["groupids"] = groups
-            setData(userId, productData, resultSet)
-    if len(resultSet) > 0:
+                setData(userId, productData, change)
+    if len(resultList) > 0:
         with open("logs\drawCoLog"+str(int(time.time()))+".txt", "w") as f:
-            lines = "\n".join(list(resultSet))
+            lines = "\n".join(resultList)
             f.write(lines)
 
 def loadProductIds(filePath):

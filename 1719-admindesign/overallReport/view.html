@@ -1,0 +1,56 @@
+<div class="curtain" ng-show="loading">
+  <p>{{"loading" | translate}}</p>
+</div>
+
+<div class="row result-num">
+  <div class="pull-left">
+    <span class="text pull-left"><b>今日数据&nbsp:&nbsp</b></span>
+    <div class="pull-left">
+      <span class="text pull-left"><b>{{statisticDate}}</b></span>
+    </div>
+  </div>
+</div>
+
+<div class="function-bar clearfix row">
+  <div class="col-md-2">{{"company_name" | translate}}</div>
+  <div class="col-md-2">{{"product_auditStatus_1" | translate}}</div>
+  <div class="col-md-2">{{"product_auditStatus_0" | translate}}</div>
+  <div class="col-md-2">{{"product_auditStatus_2" | translate}}</div>
+  <div class="col-md-2">当日{{"stat_submit_sum" | translate}}</div>
+  <div class="col-md-2">当日{{"stat_pass_rate" | translate}}</div>
+</div>
+<div class="row products-result" ng-if="drawCoStats.length">
+  <div ng-if="drawCoStat" ng-repeat="drawCoStat in drawCoStats" class="flex-container thin-row" ng-mouseover="mouseover($event)" ng-mouseout="mouseout($event)">
+    <div class="col-md-2"><span>{{ drawCoStat.companyName }}</span></div>
+    <div class="col-md-2"><span>{{ drawCoStat.pending }}</span></div>
+    <div class="col-md-2"><span>{{ drawCoStat.pass }}</span></div>
+    <div class="col-md-2"><span>{{ drawCoStat.reject }}</span></div>
+    <div class="col-md-2"><span>{{ drawCoStat.submitSum }}</span></div>
+    <div class="col-md-2"><span>{{ drawCoStat.passRate }}</span></div>
+  </div>
+</div>
+
+<div class="row result-num">
+  <div class="pull-left">
+    <span class="text pull-left"><b>历史数据&nbsp:&nbsp</b></span>
+  </div>
+</div>
+
+<div class="function-bar clearfix row">
+  <div class="col-md-2">{{"company_name" | translate}}</div>
+  <div class="col-md-2">累计{{"product_auditStatus_1" | translate}}</div>
+  <div class="col-md-2">累计{{"product_auditStatus_0" | translate}}</div>
+  <div class="col-md-2">累计{{"product_auditStatus_2" | translate}}</div>
+  <div class="col-md-2">累计{{"stat_submit_sum" | translate}}</div>
+  <div class="col-md-2">平均{{"stat_pass_rate" | translate}}</div>
+</div>
+<div class="row products-result" ng-if="drawCoHisStats.length">
+  <div ng-if="drawCoHisStat" ng-repeat="drawCoHisStat in drawCoHisStats" class="flex-container thin-row" ng-mouseover="mouseover($event)" ng-mouseout="mouseout($event)">
+    <div class="col-md-2"><span>{{ drawCoHisStat.companyName }}</span></div>
+    <div class="col-md-2"><span>{{ drawCoHisStat.pending }}</span></div>
+    <div class="col-md-2"><span>{{ drawCoHisStat.pass }}</span></div>
+    <div class="col-md-2"><span>{{ drawCoHisStat.reject }}</span></div>
+    <div class="col-md-2"><span>{{ drawCoHisStat.submitSum }}</span></div>
+    <div class="col-md-2"><span>{{ drawCoHisStat.passRate }}</span></div>
+  </div>
+</div>

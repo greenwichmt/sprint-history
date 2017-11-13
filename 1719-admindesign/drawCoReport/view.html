@@ -1,0 +1,49 @@
+<div class="curtain" ng-show="loading">
+  <p>{{"loading" | translate}}</p>
+</div>
+
+<div class="row result-num">
+  <div class="pull-left">
+    <div class="fall-text pull-left">{{"company_name" | translate}}&nbsp:&nbsp</div>
+    <div class="companyList pull-left">
+      <select class="companySelect pull-left"  ng-model="selectedCompany" ng-options="co.title for co in availableCompanies" ng-change="onCompanyChanged()"></select>
+    </div>
+  </div>
+  <div class="fall-text page-num pull-right">
+    <label>{{"search_items_in_page" | translate}}</label>
+    <select ng-model="productsPerPage.selected" ng-options="p for p in productsPerPage.options" ng-init="productsPerPage.selected=productsPerPage.options[0]" ng-change="onItemsOnPageChanged()"></select>
+    <label style="width:15px"></label>
+  </div>
+</div>
+
+<div class="function-bar clearfix row" ng-if="drawerAuditStats.length">
+  <div class="col-md-2">{{"stat_nickname" | translate}}</div>
+  <div class="col-md-2">{{"stat_phone_num" | translate}}</div>
+  <div class="col-md-2">{{"product_auditStatus_1" | translate}}</div>
+  <div class="col-md-2">{{"product_auditStatus_0" | translate}}</div>
+  <div class="col-md-2">{{"product_auditStatus_2" | translate}}</div>
+  <div class="col-md-1">{{"stat_submit_sum" | translate}}</div>
+  <div class="col-md-1">{{"stat_pass_rate" | translate}}</div>
+</div>
+<div class="row products-result" ng-if="drawerAuditStats.length">
+  <div ng-if="drawerAuditStat" ng-repeat="drawerAuditStat in drawerAuditStats" class="flex-container thin-row" ng-mouseover="mouseover($event)" ng-mouseout="mouseout($event)">
+    <div class="col-md-2"><span>{{ drawerAuditStat.nickname }}</span></div>
+    <div class="col-md-2"><span>{{ drawerAuditStat.phone }}</span></div>
+    <div class="col-md-2"><span>{{ drawerAuditStat.pending }}</span></div>
+    <div class="col-md-2"><span>{{ drawerAuditStat.pass }}</span></div>
+    <div class="col-md-2"><span>{{ drawerAuditStat.reject }}</span></div>
+    <div class="col-md-1"><span>{{ drawerAuditStat.submitSum }}</span></div>
+    <div class="col-md-1"><span>{{ drawerAuditStat.passRate }}</span></div>
+  </div>
+</div>
+
+<!-- pagination -->
+<div class="center-block text-center">
+  <div style="float:left">
+    <ul id="products-pagination" class="pagination-md"></ul>
+  </div>
+  <div style="float:left;padding:25px 0 0 20px;"><span>共{{totalPages}}页，跳转到第</span>
+    <input type="text" ng-model="currentPageJumpNo" ng-keypress="onKeyChanged($event)">
+    <span>页</span>
+  </div>
+</div>
