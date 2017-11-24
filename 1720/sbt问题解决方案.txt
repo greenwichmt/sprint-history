@@ -1,0 +1,4 @@
+1. 重新导入，让IDEA识别出它是sbt项目，自动下载依赖, 添加到 external libraries
+2. 删除C:\Users\a\.m2\repository-----------[sbt resolver]
+3. sbt resolver 是一些远程仓库地址，下载依赖包的地址
+4. 一个依赖包的ivy.xml文件里描述了很多嵌套的依赖包
