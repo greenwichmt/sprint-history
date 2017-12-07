@@ -1,0 +1,39 @@
+﻿"assetId": "0ae58a8c-52a9-498c-8405-4e4cc7d77169",
+"versionId": "v1511251825",
+"url": "https://s3.cn-north-1.amazonaws.com.cn/ezhome-uat-cms-assets/Asset/0ae58a8c-52a9-498c-8405-4e4cc7d77169/7756c1a0-4394-41b4-b4e1-a51974d12e52/v1511251825.json",
+"createdAt": 1511251825,
+"createdBy": "00008b65-edc7-42ff-aa5b-1d4185ad2d6d"
+
+POST         /v1.0/asset/:id/data/saveversion   @controllers.AssetController.saveAssetVersion(id: String)
+GET          /v1.0/asset/:id/data/versions      @controllers.AssetController.getAssetVersions(id: String)
+
+http://uat-fpmw.shejijia.com/assets/swagger/index.html
+
+1. 正常保存----会保存版本信息到版本列表
+-post  uat-fpmw/api/rest/v2.0/design/58ef4d5f-1bf8-4df1-b3b1-d8a4a4f28c57?sid=72339275-31bf-460e-b119-76cfdafd7713
+这个API目前正在使用，一切保持原样
+
+2. 单独保存json----会保存版本信息到版本列表
+-patch uat-fpmw/api/rest/v1.0/designs/58ef4d5f-1bf8-4df1-b3b1-d8a4a4f28c57/data?sid=72339275-31bf-460e-b119-76cfdafd7713
+{
+  "data": "sms11271843"
+}
+
+POST           /api/rest/v1.0/design/saveas
+POST           /api/rest/v1.0/design/copy
+
+
+3. 获取版本列表
+-get  uat-fpmw/v1.0/asset/58ef4d5f-1bf8-4df1-b3b1-d8a4a4f28c57/data/versions
+4. 获取历史版本fullAsset
+-get uat-fpmw/api/rest/v1.0/design?id=58ef4d5f-1bf8-4df1-b3b1-d8a4a4f28c57&sid=72339275-31bf-460e-b119-76cfdafd7713&versionId=v1511768631
+5. 获取历史版本仅json
+-get  uat-fpmw/api/rest/v1.0/design/datajson?id=58ef4d5f-1bf8-4df1-b3b1-d8a4a4f28c57&sid=72339275-31bf-460e-b119-76cfdafd7713&versionId=v1511768631
+
+
+
+在prod couchbase 新建design bucket
+
+
+
+

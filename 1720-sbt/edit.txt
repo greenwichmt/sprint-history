@@ -1,0 +1,1 @@
+play api里面的json自动formatter，支持嵌套 nested formatter

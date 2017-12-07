@@ -1,0 +1,4 @@
+Q:500 server error? server response nothing?
+
+A:项目\conf\play.plugins 新建这个文件，编辑↓
+400:org.reactivecouchbase.play.plugins.CouchbasePlugin
